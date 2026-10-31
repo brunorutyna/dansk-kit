@@ -18,7 +18,7 @@
     hej: 'hi', hvad: 'what', kan: 'can', jeg: 'I', hjælpe: 'help', med: 'with', leder: 'look (leder efter = look for)', efter: 'after / for',
     en: 'a (en-word)', et: 'a (et-word)', rød: 'red', rødt: 'red (et-form)', røde: 'red (definite/plural)', hat: 'hat', hatten: 'the hat',
     ja: 'yes', lidt: 'a little', men: 'but', her: 'here', taler: 'speak(s)', vi: 'we', dansk: 'Danish',
-    grøn: 'green', grønt: 'green (et-form)', tørklæde: 'scarf', nogle: 'some', blå: 'blue (no -e in plural)', blåe: '(wrong form of blå)', blåt: 'blue (et-form)',
+    grøn: 'green', grønt: 'green (et-form)', tørklæde: 'scarf', nogle: 'some', blå: 'blue (plural: blå, also blåe)', blåt: 'blue (et-form)', blåen: '(not a word)',
     sokker: 'socks', stribet: 'striped', stribede: 'striped (definite/plural)', kjole: 'dress', gul: 'yellow', gult: 'yellow (et-form)', slips: 'tie',
     i: 'in', dag: 'day (i dag = today)', køber: 'buy(s)', koster: 'cost(s)', er: 'is / are', sikke: 'what a…!', flot: 'nice, fine',
     nej: 'no', av: 'ouch', præcis: 'exactly', test: 'test', stemmen: 'the voice', høre: 'hear', mig: 'me',
@@ -51,7 +51,7 @@
     { screen: 'pick', id: 'Hylden', title: 'Hylden', sub: 'Hvad er det?', rounds: [
       { colour: 'roed', en: 'A red hat', right: 'en rød hat', wrong: ['et rødt hat', 'en røde hat'], rule: 'hat is an en-word: en rød hat.' },
       { colour: 'groen', en: 'A green scarf', right: 'et grønt tørklæde', wrong: ['et grøn tørklæde', 'en grønt tørklæde'], rule: 'tørklæde is an et-word: the adjective gets -t.' },
-      { colour: 'blaa', en: 'Some blue socks', right: 'nogle blå sokker', wrong: ['nogle blåe sokker', 'nogle blåt sokker'], rule: 'blå gets no -e in the plural.' },
+      { colour: 'blaa', en: 'Some blue socks', right: 'nogle blå sokker', wrong: ['nogle blåt sokker', 'nogle blåen sokker'], rule: 'blå: plural blå (blåe is also allowed). -t is only for et-words.' },
       { colour: 'hvid', pattern: 'stribet', en: 'A striped dress', right: 'en stribet kjole', wrong: ['en stribede kjole', 'et stribet kjole'], rule: 'Indefinite en-word: no ending.' },
       { colour: 'gul', en: 'A yellow tie', right: 'et gult slips', wrong: ['et gul slips', 'en gult slips'], rule: 'slips is an et-word: gul → gult.' },
     ] },

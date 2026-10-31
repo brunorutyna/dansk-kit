@@ -66,7 +66,7 @@
     row.appendChild(el('div', 'who', K.esc(c.name)));
     row.appendChild(el('div', 'da', K.da(l.da)));
     const tools = el('div', 'tools'); row.appendChild(tools);
-    s.btn(tools, '▶', (e) => { e.stopPropagation(); K.VOICE.say(l.da, l.w, true); }, { cls: 'mini', silent: true });
+    s.btn(tools, '▶', (e) => { e.stopPropagation(); K.VOICE.say(l.da, l.w, 'replay'); }, { cls: 'mini', silent: true });
     if (l.en) s.btn(tools, 'EN', (e, b) => { e.stopPropagation(); b.remove(); row.appendChild(el('div', 'en', K.esc(l.en))); if (K.st) K.st.english++; }, { cls: 'mini' });
     return row;
   }
@@ -80,7 +80,7 @@
     opts.forEach((o, i) => s.btn(c, o.da ? K.da(o.da) : K.esc(o.en), () => {
       if (o.set) Object.assign(K.st.flags, o.set);
       if (!o.da) K.st.english++;
-      if (o.da) K.VOICE.say(o.da, p.who, true);
+      if (o.da) K.VOICE.say(o.da, p.who, false);
       if (o.after) K.show('panel', { scene: p.scene, cast: p.cast, lines: o.after, _after: true });
       else s.finish();
     }, { answer: true, cls: 'opt' + (o.da ? '' : ' english'), data: { i: String(i) } }));
