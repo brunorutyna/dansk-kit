@@ -67,7 +67,9 @@ const serve = () => new Promise((res) => {
           const areas = [box && box.getBoundingClientRect(), { left: 10, top: 70, right: innerWidth - 10, bottom: innerHeight - 20 }].filter(Boolean);
           for (const q of areas) for (let k = 0; k < 40; k++) {
             const x = q.left + 4 + Math.random() * Math.max(1, q.right - q.left - 8), y = q.top + 4 + Math.random() * Math.max(1, q.bottom - q.top - 8);
-            if (free(document.elementFromPoint(x, y))) return { x, y, id: K.cur.id };
+            // phones snap a near-miss tap onto the nearest button (touch adjustment): stay a finger's width away from any
+            const near = [[0, 0], [28, 0], [-28, 0], [0, 28], [0, -28], [20, 20], [-20, -20], [20, -20], [-20, 20]].every(([dx, dy]) => free(document.elementFromPoint(x + dx, y + dy)));
+            if (near) return { x, y, id: K.cur.id };
           }
           return null;
         }, t0);
