@@ -16,8 +16,9 @@
     s.btn(menu, mid ? 'Begynd forfra' : 'Begynd', go(true), { cls: mid ? '' : 'main', data: { bot: 'new' } });
     s.btn(menu, 'Indstillinger', () => K.modal((b) => { b.appendChild(el('h2', '', 'Indstillinger')); K.settingsUI(b); }));
     const st = K.save.stats;
+    if (K.CONFIG.titleExtra) K.CONFIG.titleExtra(menu, s);
     root.appendChild(el('div', 'foot', `Spillet ${st.done}× · Slutninger ${Object.keys(st.endings).length}/${K.CONFIG.endings || 1}`));
-    s.bot = () => root.querySelector('[data-bot="new"]');
+    s.bot = s.bot || (() => root.querySelector('[data-bot="new"]'));
   };
 
   // Time or chapter card: shows for 1.1 s and moves on by itself. Not tappable: a stray tap must never skip anything.
@@ -73,7 +74,7 @@
   S.choice = function (root, p, s) {
     root.appendChild(K.ART.scene(p.scene, K.st));
     const c = el('div', 'choice'); root.appendChild(c);
-    if (p.prompt) c.appendChild(el('div', 'prompt', K.esc(p.prompt)));
+    if (p.prompt) c.appendChild(el('div', 'prompt', K.da(p.prompt)));
     const opts = typeof p.options === 'function' ? p.options(K.st) : p.options;
     opts.forEach((o, i) => s.btn(c, o.da ? K.da(o.da) : K.esc(o.en), () => {
       if (o.set) Object.assign(K.st.flags, o.set);
@@ -81,8 +82,9 @@
       if (o.da) K.VOICE.say(o.da, p.who, false);
       if (o.after) K.show('panel', { scene: p.scene, cast: p.cast, lines: o.after, _after: true });
       else s.finish();
-    }, { answer: true, cls: 'opt' + (o.da ? '' : ' english'), data: { i: String(i) } }));
-    s.bot = (mode) => { const b = [...c.querySelectorAll('.opt')]; return mode === 'wrong' ? b[b.length - 1] : b[0]; };
+    }, { answer: true, cls: 'opt' + (o.da ? '' : ' english'), data: { i: String(i), good: o.good ? '1' : '0' } }));
+    // bot: right = the option marked good (or the first); wrong = a Danish option that is not good, sometimes English
+    s.bot = (mode) => { const b = [...c.querySelectorAll('.opt')]; const g = b.find((x) => x.dataset.good === '1') || b[0]; if (mode !== 'wrong') return g; const bad = b.filter((x) => x !== g); return bad[Math.floor(Math.random() * bad.length)] || g; };
   };
 
   S.end = function (root, p, s) {
@@ -92,8 +94,9 @@
     if (K.save.run) { S2.done++; S2.endings[ending] = (S2.endings[ending] || 0) + 1; K.save.run = null; K.persist(); }
     K.SFX.play('win'); K.ended = true;
     root.appendChild(K.ART.scene('title'));
-    const ranks = Object.entries(st.ranks).map(([id, r]) => `<div class="rk-row"><span>${K.esc(id)}</span><b class="rk rk-${r}">${r}</b></div>`).join('');
-    root.appendChild(el('div', 'end-box', `<div class="big">SLUT</div><div class="sub">${K.esc(ending)}</div>${ranks}<div class="small">Point: ${st.score}</div>`));
+    const tally = {}; Object.values(st.ranks).forEach((r) => { tally[r] = (tally[r] || 0) + 1; });
+    const ranks = `<div class="rk-sum">${['S', 'A', 'B', 'C'].filter((r) => tally[r]).map((r) => `<span><b class="rk rk-${r}">${r}</b> × ${tally[r]}</span>`).join('')}</div>`;
+    root.appendChild(el('div', 'end-box', `<div class="big">${K.CONFIG.endTitle ? K.esc(K.CONFIG.endTitle(st)) : 'SLUT'}</div><div class="sub">${K.esc(ending)}</div>${ranks}${K.CONFIG.endExtra ? K.CONFIG.endExtra(st) : ''}`));
     const menu = el('div', 'menu'); root.appendChild(menu);
     s.btn(menu, 'Spil igen', () => K.start(true), { cls: 'main' });
     s.btn(menu, 'Til start', () => K.show('title'));

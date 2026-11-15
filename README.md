@@ -11,6 +11,7 @@ Demo: https://brunorutyna.github.io/dansk-kit/
 - **Saves** that survive new versions; **"Ny version ↻"** sticker when a new deploy is live.
 - **Every Danish word tappable** for its meaning (long-press inside buttons); **Hvorfor?** rule on mistakes; missed phrases remembered for review; S/A/B/C ranks.
 - **Story** as data (`K.FLOW`): cards, panels with lines (only *Videre* advances), choices with an English option that costs.
+- **Arranged music per mood** (calm, tense, trip, happy) with volume sliders for music, effects and voice; choices can mark one option `good: true` (the playtest bot picks it); `pick` rounds can show a Danish frame sentence (`q: 'Jeg ___ ikke.'`); `build` rounds can show a `reply` after a right answer; `CONFIG.titleExtra`, `endTitle`, `endExtra` hooks.
 - **Simple art** (`js/art.js`) and **simple audio** (`js/audio.js`): shapes and blips for the prototype. Promotion to final art replaces only these two files.
 - **Checks**: `tools/lint.js`, `tools/playtest.js` (plays the whole game with real taps using each screen's bot), `tools/bump.sh`.
 

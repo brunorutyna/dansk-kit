@@ -20,7 +20,7 @@
   }
   K.game('build', {
     title: 'Byg sætningen',
-    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || [])),
+    texts: (p) => p.rounds.flatMap((r) => r.answers.concat(r.traps || []).concat(r.reply ? [r.reply] : [])),
     tilesFor,
     lint(p) {
       const e = [];
@@ -61,7 +61,9 @@
           if (ok) { score++; K.ART.pop(built); K.VOICE.say(r.answers[0], null, true); } else K.ART.shake(built);
           pool.querySelectorAll('button').forEach((b) => { b.disabled = true; });
           K.feedback(s, body, ok, r.answers[0], r.rule);
-          K.after(s, body, ok).then(() => { i++; round(); });
+          const rep = ok ? r.reply : r.miss;
+          if (rep) { const d = el('div', 'reply'); d.innerHTML = (p.who && K.CAST[p.who] ? `<b>${K.esc(K.CAST[p.who].name)}</b> ` : '') + (ok ? K.da(rep) : K.esc(rep)); body.appendChild(d); }
+          K.after(s, body, ok && !r.reply).then(() => { i++; round(); });
         }, { answer: true, cls: 'main', data: { done: '1' } });
         draw();
         // bot: right = next word of the first answer; wrong = any tiles, then Færdig

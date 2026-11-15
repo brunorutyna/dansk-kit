@@ -5,7 +5,7 @@
   const el = K.el;
   K.game('pick', {
     title: 'Vælg',
-    texts: (p) => p.rounds.flatMap((r) => [r.right].concat(r.wrong)),
+    texts: (p) => p.rounds.flatMap((r) => [r.right].concat(r.wrong).concat(r.q ? [r.q.replace(/_+/g, ' ')] : [])),
     lint(p) {
       const e = [];
       p.rounds.forEach((r, i) => {
@@ -20,22 +20,23 @@
     },
     screen(root, p, s) {
       const { body } = K.frame(root, p.title || 'Vælg', p.sub);
-      const rounds = K.shuffle(p.rounds).slice(0, p.n || p.rounds.length);
+      const rounds = (p.keep ? p.rounds.slice() : K.shuffle(p.rounds)).slice(0, p.n || p.rounds.length);
       let i = 0, score = 0;
       function round() {
         s.unlock(); body.innerHTML = '';
         if (i >= rounds.length) return done();
         const r = rounds[i];
         body.appendChild(el('div', 'progress', `${i + 1} / ${rounds.length}`));
-        body.appendChild(K.ART.thing(null, r.colour, r.pattern));
-        if (r.en) body.appendChild(el('div', 'prompt', K.esc(r.en)));
+        if (r.q) body.appendChild(el('div', 'frame', K.da(r.q).replace(/_+/g, '<b class="gap">___</b>')));
+        else body.appendChild(K.ART.thing(null, r.colour, r.pattern));
+        if (r.en) body.appendChild(el('div', 'prompt small', K.esc(r.en)));
         const grid = el('div', 'opts'); body.appendChild(grid);
         K.shuffle([r.right].concat(r.wrong)).forEach((o) => s.btn(grid, K.da(o), (e, b) => answer(r, o === r.right, b), { answer: true, cls: 'opt', data: { right: o === r.right ? '1' : '0' } }));
         // English is always possible, but counts as a miss
         s.btn(body, 'Jeg ved det ikke (EN)', (e, b) => { if (K.st) K.st.english++; answer(r, false, b); }, { answer: true, cls: 'ghost small english', data: { right: '0' } });
       }
       async function answer(r, ok, b) {
-        if (ok) { score++; K.ART.pop(b); const q = b.getBoundingClientRect(); K.ART.burst(q.left + q.width / 2, q.top + q.height / 2); K.VOICE.say(r.right, null, true); }
+        if (ok) { score++; K.ART.pop(b); const q = b.getBoundingClientRect(); K.ART.burst(q.left + q.width / 2, q.top + q.height / 2); K.VOICE.say(r.say || r.right, null, true); }
         else K.ART.shake(b);
         b.classList.add(ok ? 'is-ok' : 'is-no');
         K.feedback(s, body, ok, r.right, r.rule);
